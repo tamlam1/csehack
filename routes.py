@@ -1,11 +1,18 @@
 from flask import request, jsonify
 from app import app
 from twilio.twiml.voice_response import Gather, VoiceResponse, Say
-from src.twilio import subscribe_sms_alert
+from src.twilio import subscribe_sms_alert,call_user
 
 @app.route('/')
 def home():
     return {'hi':'hello'}
+
+
+@app.route('/api/call_user', methods=['POST','GET'])
+def call_user():
+    #Get user info from front_end
+    #call_user()
+    pass
 
 @app.route('/api/get_data', methods=['POST'])
 def get_data():
