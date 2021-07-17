@@ -5,7 +5,7 @@ import sys
 # add dummy data here
 def main():
     db = SQL()
-    # call_user(1, "DEEZ NUTS DEEZ NUTS DEEZ NUTS", "funny meme", "100")
+    # call_user('+610468615313', "DEEZ NUTS DEEZ NUTS DEEZ NUTS", "funny meme", "100")
     # Only need to do this once
     #db.initialiseDb()
     #db.deleteContent(1,1)
@@ -18,14 +18,11 @@ def main():
     #   db.addChannel(i, "Fundamentals " + str(i), "Chemistry")
 
     # db.addSubscription(1, "+61422111578")
-    # db.addSubscription(1, "+61468615313")
+    # db.removeSubscription("['1']", "+61468615313")
 
     # a = db.getContentIDTitle(1)
     # a.pop(0)
     # print(a)
-    a = db.getContentWithIDAll(1,9)
-    for i in a:
-      print(i)
     db.printDatabase()
     db.close()
 

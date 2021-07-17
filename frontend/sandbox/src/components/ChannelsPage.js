@@ -257,7 +257,7 @@ function ChannelsPage() {
   };
 
   const submitPhoneNumberRemove = () => {
-    fetch('/api/unsubscribe_user', {
+    fetch('/api/unsubscribe_user_web', {
       method: 'POST',
       headers: {
           accept: 'application/json',

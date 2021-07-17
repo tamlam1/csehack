@@ -2,7 +2,7 @@ from flask import request, jsonify
 from app import app
 from twilio.twiml.voice_response import Gather, VoiceResponse, Say
 from twilio.twiml.messaging_response import MessagingResponse
-from src.apiTwilio import subscribe_sms_alert,call_user 
+from src.apiTwilio import subscribe_sms_alert,call_user, new_subscribe_sms_alert 
 from sql import *
 import re
 
@@ -46,27 +46,57 @@ def unsubscribe_sms():
     if reg:
         ID = re.search("[0-9]+", reg[0])
         db = SQL()
-        db.removeSubscription(str(ID.group(0)), str(number))
+        try:
+            db.removeSubscription(str(ID.group(0)), str(number))
+        except:
+            pass
         db.close()
     return str(response)
+
 @app.route('/api/subscribe_user', methods=['POST'])
 def subscribe_user():
+    db = SQL()
 
     data = request.get_json()
-    print(data)
+    number = str(data['phone_number'])
+    number = number[:3] + number[4:]
+    ID = str(data['channel_id'][0])
+    db.addSubscription(ID, number)
+
+    name = db.getChannelName(ID)
+
+    new_subscribe_sms_alert(number, ID, name)
+
+    db.close()
     return {'hi':'done'}
 
-@app.route('/api/unsubscribe_user', methods=['POST'])
+@app.route('/api/unsubscribe_user_web', methods=['POST'])
 def unsubscribe_user():
+    db = SQL()
 
     data = request.get_json()
-    print(data)
+    number = str(data['phone_number'])
+    number = number[:3] + number[4:]
+    ID = str(data['channel_id'][0])
+
+    try:
+        db.removeSubscription(ID, number)
+    except:
+        pass
+
+    db.close()
     return {'hi':'done'}
 
 @app.route('/api/play_lecture', methods=['POST'])
 def play_lecture():
-
+    
     data = request.get_json()
+    # number = str(data['phone_number'])
+    # number = number[:3] + number[4:]
+    # ID = str(data['channel_id'][0])
+
+    # call_user(number, content, channel_name, channel_ID)
+    
     print(data)
     return {'hi':'done'}
 

@@ -124,6 +124,12 @@ class SQL():
         cursor = self.curr.execute("SELECT * FROM channels")
         return cursor
 
+    def getChannelName(self, CHANNELID):
+        cursor = self.curr.execute("SELECT channelname FROM channels where channelid=" + str(CHANNELID))
+        for i in cursor:   
+            tup = i
+        return tup[0]
+
     def channelExist(self, CHANNELID):
         print(CHANNELID)
         cursor = self.curr.execute("SELECT * FROM channels where CHANNELID =" + str(CHANNELID))
