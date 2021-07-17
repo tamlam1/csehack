@@ -10,6 +10,13 @@ import re
 def home():
     return {'hi':'hello'}
 
+
+@app.route('/api/call_user', methods=['POST','GET'])
+def call_user():
+    #Get user info from front_end
+    #call_user()
+    pass
+
 @app.route('/api/get_data', methods=['POST'])
 def get_data():
 
