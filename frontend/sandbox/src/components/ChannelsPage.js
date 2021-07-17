@@ -260,6 +260,23 @@ function ChannelsPage() {
     setNewChannelPop(true)
   }
 
+  const [channels, setChannels] = React.useState('')
+
+  React.useEffect(() => {
+    fetch('/get_channels', {
+       method: 'GET',
+       headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+       },
+    }).then(res => res.json()).then((data) => {
+
+       setData(data.portfolios);
+       console.log(data.weights);
+
+    }).catch(error => console.log(error));
+  }, []);
+
 
 
   return (

@@ -3,6 +3,8 @@ from app import app
 from twilio.twiml.voice_response import Gather, VoiceResponse, Say
 from src.twilio import subscribe_sms_alert,call_user
 
+from sql import *
+
 @app.route('/')
 def home():
     return {'hi':'hello'}
@@ -180,6 +182,15 @@ def speechSpeak():
         response.redirect('/api/speechOptions', method="GET")
 
     return str(response)
+
+@app.route('/api/getChannels', methods=['POST','GET'])
+def get_channels():
+
+    db = SQL()
+
+    channels = db.get
+
+
 
 
 
