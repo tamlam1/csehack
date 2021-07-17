@@ -1,10 +1,33 @@
 import { Button, TextField, Box } from '@material-ui/core';
 import './App.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 
 function App() {
   const [transcript, setTranscript] = React.useState(''); 
+
+
+  React.useEffect(() => {
+    fetch('/api/home').then(r => r.json()).then((data) => {
+      console.log(data.hi);
+    })
+  }, []);
+
+  const sendData = () => {
+    fetch('/api/get_data', {
+      method: 'POST',
+      headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "text" : "this is some text"
+      }),
+    }).then(r => r.json()).then((data) => {
+      console.log(data.hi);
+    })
+  };
+
   return (
     <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">
       <h1>SAND BOX</h1>
@@ -33,7 +56,14 @@ function App() {
         >
           Upload
         </Button>
-        
+        <Button 
+          variant="contained"
+          color="primary"
+          style={{margin:"5px"}}
+          onClick={() => sendData(transcript)}
+        >
+          Send
+        </Button>
       </Box>
     </Box>
   );

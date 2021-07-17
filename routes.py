@@ -6,7 +6,12 @@ from app import app
 def home():
     return {'hi':'hello'}
 
+@app.route('/api/get_data', methods=['POST'])
+def get_data():
 
+    data = request.get_json()
+    print(data)
+    return {'hi':'done'}
 
 
 
