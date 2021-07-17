@@ -1,4 +1,4 @@
-import { Button, TextField, Box } from '@material-ui/core';
+import { Button, TextField, Box, Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
@@ -6,7 +6,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider, useTheme } from '@material-ui/core/styles';
 
 
 import PropTypes from 'prop-types';
@@ -46,6 +46,18 @@ const useStyles1 = makeStyles((theme) => ({
   },
 }));
 
+const titleTheme = createTheme();
+
+titleTheme.typography.h3 = {
+  fontSize: '1.5rem',
+  '@media (min-width:600px)': {
+    fontSize: '1.5rem',
+  },
+  [titleTheme.breakpoints.up('md')]: {
+    fontSize: '2rem',
+  },
+  fontWeight: '600',
+};
 
 
 const defaultTheme = createTheme();
@@ -234,7 +246,9 @@ function ChannelsPage() {
   return (
     <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">
       <MuiThemeProvider theme={theme}>
-      This is the channels page.
+        <ThemeProvider theme={titleTheme}>
+          <Typography variant='h3'>This is the channels page.</Typography>
+        </ThemeProvider>
       <TableContainer component={Paper} className={classes.card}>
         <Table className={classes.table} aria-label="custom pagination table">
           <TableHead>
