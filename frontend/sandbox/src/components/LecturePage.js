@@ -6,8 +6,13 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import { useHistory, useParams } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-
+import {
+  createTheme,
+  MuiThemeProvider,
+  withStyles
+} from "@material-ui/core/styles";
 
 import PropTypes from 'prop-types';
 
@@ -30,6 +35,19 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import PhonelinkRingIcon from '@material-ui/icons/PhonelinkRing';
 import PhoneCallbackIcon from '@material-ui/icons/PhoneCallback';
+
+import Tooltip from '@material-ui/core/Tooltip';
+
+const defaultTheme = createTheme();
+const theme = createTheme({
+  overrides: {
+    MuiTooltip: {
+      tooltip: {
+        fontSize: "0.9em",
+      }
+    }
+  }
+});
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -191,8 +209,8 @@ const useStyles2 = makeStyles({
 
 
 
-function Channels() {
-
+function LecturePage() {
+  let {channelId} = useParams();
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -213,6 +231,7 @@ function Channels() {
   return (
     <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">
       This is the channels page.
+      <MuiThemeProvider theme={theme}>
       <TableContainer component={Paper} className={classes.card}>
         <Table className={classes.table} aria-label="custom pagination table">
           <TableHead>
@@ -242,7 +261,7 @@ function Channels() {
                 </TableCell>
                 <TableCell width="10%" align="center">
                   <Button>
-                    <PhoneCallbackIcon />
+                  <Tooltip title="Play via phone call"><PhoneCallbackIcon /></Tooltip>
                   </Button>
                 </TableCell>
               </TableRow>
@@ -286,9 +305,9 @@ function Channels() {
 
 
 
-    
+      </MuiThemeProvider>
     </Box>
   );
 }
 
-export default Channels;
+export default LecturePage;
