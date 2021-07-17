@@ -29,7 +29,10 @@ function App() {
           <Route path="/channels">
             <Header PageContents={<ChannelsPage />} />
           </Route>
-          <Route path="/">
+          <Route path="/channels/:category">
+            <Header PageContents={<ChannelsPage />} />
+          </Route>
+          <Route exact path="/">
             <Header PageContents={<HomePage />} />
           </Route>
         </Switch>

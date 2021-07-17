@@ -19,7 +19,8 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  useHistory
 } from "react-router-dom";
 
 
@@ -103,15 +104,14 @@ const categories =
   }]
 
 function HomePage() {
+  
+  // let history = useHistory();
 
   const classes = useStyles();
 
   return (
     <React.Fragment>
-      <CssBaseline />
       
-      <main>
-        {/* Hero unit */}
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
             <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -120,24 +120,10 @@ function HomePage() {
             <Typography variant="h5" align="center" color="textSecondary" paragraph>
               Welcome to Sandbox! Get started by browsing the categories below!
             </Typography>
-            <div className={classes.heroButtons}>
-              <Grid container spacing={2} justifyContent="center">
-                <Grid item>
-                  <Button variant="contained" color="primary">
-                    Button
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button variant="outlined" color="primary">
-                    Other Button
-                  </Button>
-                </Grid>
-              </Grid>
-            </div>
+            
           </Container>
         </div>
         <Container className={classes.cardGrid} maxWidth="lg">
-          {/* End hero unit */}
           <Grid container spacing={4}>
             {categories.map(({cat, img, desc}) => (
               <Grid item key={cat} xs={12} sm={6} md={4}>
@@ -155,16 +141,17 @@ function HomePage() {
                     </Typography>
                   </CardContent>
                   <CardActions>
+                    <Link to={"channels/"+cat}>
                     <Button size="small" color="primary">
-                      View Channels
+                      View Channels {'>'}
                     </Button>
+                    </Link>
                   </CardActions>
                 </Card>
               </Grid>
             ))}
           </Grid>
         </Container>
-      </main>
 
       <footer className={classes.footer}>
         <Typography variant="subtitle1" align="center" color="textSecondary" component="p">

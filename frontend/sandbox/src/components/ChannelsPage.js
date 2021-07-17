@@ -228,6 +228,8 @@ const cats = ["Chemistry", "Physics", "Biology", "Maths", "PDHPE", "Geography", 
 
 function ChannelsPage() {
 
+  let {category} = useParams();
+  console.log({category})
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -275,15 +277,17 @@ function ChannelsPage() {
 
   React.useEffect(() => {
     fetch('/api/get_channels', {
-       method: 'GET',
+       method: 'POST',
        headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
        },
+       body: JSON.stringify({category}),
     }).then(res => res.json()).then((result) => {
 
        setChannels(result.data);
        console.log(result.data)
+      
 
     }).catch(error => console.log(error));
   }, []);
