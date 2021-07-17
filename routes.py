@@ -2,7 +2,7 @@ from flask import request, jsonify
 from app import app
 from twilio.twiml.voice_response import Gather, VoiceResponse, Say
 from src.apiTwilio import subscribe_sms_alert,call_user 
-from src.sql import *
+from sql import *
 
 @app.route('/')
 def home():
@@ -182,13 +182,38 @@ def speechSpeak():
 
     return str(response)
 
-@app.route('/api/getChannels', methods=['POST','GET'])
+@app.route('/api/get_channels', methods=['POST','GET'])
 def get_channels():
 
-    db = SQL
-    channels = db.getChannels()
+    db = SQL()
+    channel_list = db.getChannels()
+    channels = []
 
+    for row in channel_list:
+        channels.append((row[1]))
+    db.close()
+
+    return {'data': channels}
+
+@app.route('/api/create_channel', methods=['POST','GET'])
+def create_channel():
+    db = SQL()
+
+    form = request.get_json()
+    channel_name = form['newChannel']
+    category = form['newChannelCat']
+
+    db.createChannel(channel_name, category)
+    channel_list = db.getChannels()
+    channels = []
+
+    for row in channel_list:
+        channels.append((row[1]))
     
+    db.close()
+
+    return {'data': channels}
+
 
 
 

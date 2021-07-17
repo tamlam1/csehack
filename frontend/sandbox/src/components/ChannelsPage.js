@@ -33,6 +33,12 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import AddIcon from '@material-ui/icons/Add';
 
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import PhonelinkRingIcon from '@material-ui/icons/PhonelinkRing';
@@ -50,8 +56,9 @@ const useStyles1 = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
     marginLeft: theme.spacing(2.5),
-  },
+  }
 }));
+
 
 
 
@@ -217,7 +224,7 @@ const useStyles2 = makeStyles({
   },
 });
 
-
+const cats = ["Chemistry", "Physics", "Biology", "Maths", "PDHPE", "Geography", "Ancient History", "Modern History", "English"]
 
 function ChannelsPage() {
 
@@ -239,6 +246,9 @@ function ChannelsPage() {
   const [newChannel, setNewChannel] = React.useState('');
   const [newChannelPop, setNewChannelPop] = React.useState(false);
 
+  const [channels, setChannels] = React.useState([('a', 'b')]);
+  const [newChannelCat, setNewChannelCat] = React.useState('');
+
   const submitCreateChannel = () => {
     fetch('/api/create_channel', {
         method: 'POST',
@@ -246,10 +256,13 @@ function ChannelsPage() {
           accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: escape(JSON.stringify({newChannel})),
-    }).then(res => res.json()).then((data) => {
-        console.log("hi");
+        body: JSON.stringify({newChannel, newChannelCat}),
+    }).then(res => res.json()).then((result) => {
+        setChannels(result.data);
+        console.log(result.data)
     }).catch(error => console.log(error));
+
+    cancelCreateChannel();
   } 
 
   const cancelCreateChannel = () => {
@@ -260,19 +273,17 @@ function ChannelsPage() {
     setNewChannelPop(true)
   }
 
-  const [channels, setChannels] = React.useState('')
-
   React.useEffect(() => {
-    fetch('/get_channels', {
+    fetch('/api/get_channels', {
        method: 'GET',
        headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
        },
-    }).then(res => res.json()).then((data) => {
+    }).then(res => res.json()).then((result) => {
 
-       setData(data.portfolios);
-       console.log(data.weights);
+       setChannels(result.data);
+       console.log(result.data)
 
     }).catch(error => console.log(error));
   }, []);
@@ -303,6 +314,22 @@ function ChannelsPage() {
             fullWidth
             onChange={(e) => setNewChannel(e.target.value)}
           />
+
+        <FormControl required>
+        <InputLabel>Category</InputLabel>
+        <Select
+          value={newChannelCat}
+          onChange={(e) => setNewChannelCat(e.target.value)}
+          style={{width:"100px"}}
+        >
+          {cats.map((i) => 
+            <MenuItem value={i}>{i}</MenuItem>
+          )};
+          
+        </Select>
+        <FormHelperText>Required</FormHelperText>
+        </FormControl>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={cancelCreateChannel} color="primary">
@@ -339,10 +366,11 @@ function ChannelsPage() {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : data
-            ).map((lecture) => (
-              <TableRow key={lecture.id}>
+              ? channels.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : channels
+            ).map((row) => (
+              
+              <TableRow key={row}>
                 <TableCell width="5%" align="center">
                   <Button>
                     <Tooltip title="Subscribe to channel"><AddCircleOutlineIcon /></Tooltip>
@@ -350,8 +378,8 @@ function ChannelsPage() {
                   </Button>
                 </TableCell>
                 <TableCell width="95%">
-                  <Link to={/lectures/ + lecture.lecture_name} style={{textDecoration:"none", color:"#1165ed"}}>
-                    {lecture.lecture_name}
+                  <Link to={/lectures/ + row} style={{textDecoration:"none", color:"#1165ed"}}>
+                    {row}
                   </Link>
                 </TableCell>
                 
