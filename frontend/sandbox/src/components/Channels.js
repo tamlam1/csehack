@@ -211,7 +211,7 @@ function Channels() {
 
 
   return (
-    <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center" width="1000px" minWidth="500px">
+    <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">
       This is the channels page.
       <TableContainer component={Paper} className={classes.card}>
         <Table className={classes.table} aria-label="custom pagination table">
@@ -237,10 +237,10 @@ function Channels() {
                 <TableCell width="70%">
                   {lecture.lecture_name}
                 </TableCell>
-                <TableCell width="30%" align="center">
+                <TableCell width="20%" align="center">
                   {lecture.time_uploaded}
                 </TableCell>
-                <TableCell width="30%" align="center">
+                <TableCell width="10%" align="center">
                   <Button>
                     <PhoneCallbackIcon />
                   </Button>
