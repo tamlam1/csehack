@@ -1,14 +1,10 @@
 from sql import *
-from apiTwilio import subscribe_sms_alert, call_user
+from src.apiTwilio import subscribe_sms_alert, call_user
 import sys
 
 # add dummy data here
 def main():
     db = SQL()
-    a = db.getChannels()
-
-    for i in a:
-      print(i)
     # call_user(1, "DEEZ NUTS DEEZ NUTS DEEZ NUTS", "funny meme", "100")
     # Only need to do this once
     #db.initialiseDb()
@@ -21,9 +17,17 @@ def main():
     # for i in range(3,10):
     #   db.addChannel(i, "Fundamentals " + str(i), "Chemistry")
 
-    #db.addSubscription(1, "+61422111578")
-    # db.printDatabase()
-    # db.close()
+    # db.addSubscription(1, "+61422111578")
+    # db.addSubscription(1, "+61468615313")
+
+    # a = db.getContentIDTitle(1)
+    # a.pop(0)
+    # print(a)
+    a = db.getContentWithIDAll(1,9)
+    for i in a:
+      print(i)
+    db.printDatabase()
+    db.close()
 
 if __name__== "__main__":
   main()

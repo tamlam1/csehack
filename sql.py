@@ -103,6 +103,19 @@ class SQL():
         cursor = self.curr.execute("SELECT * FROM content where CHANNELID = "+ str(CHANNELID))
         return cursor
 
+    def getContentText(self, CHANNELID, CONTENTID):
+        cursor = self.curr.execute("SELECT filename FROM content where CHANNELID = "+ str(CHANNELID) + " and " + "CONTENTID = " + str(CONTENTID))
+        for i in cursor:   
+            tup = i
+        return tup
+
+    def getContentIDTitleOnly(self, CHANNELID):
+        cursor = self.curr.execute("SELECT contentid, title FROM content where CHANNELID = "+ str(CHANNELID) + " order by contentid DESC")
+        temp = []
+        for i in cursor:
+            temp.append(i)
+        return temp
+
     def getSubscribers(self, CHANNELID):
         cursor = self.curr.execute("SELECT * FROM subscriptions where CHANNELID = "+ str(CHANNELID))
         return cursor
@@ -110,6 +123,14 @@ class SQL():
     def getChannels(self):
         cursor = self.curr.execute("SELECT * FROM channels")
         return cursor
+
+    def channelExist(self, CHANNELID):
+        print(CHANNELID)
+        cursor = self.curr.execute("SELECT * FROM channels where CHANNELID =" + str(CHANNELID))
+        if cursor:
+            return 1
+        else:
+            return 0
 
     def close(self):
         self.conn.close()

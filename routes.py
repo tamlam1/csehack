@@ -1,8 +1,10 @@
 from flask import request, jsonify
 from app import app
 from twilio.twiml.voice_response import Gather, VoiceResponse, Say
+from twilio.twiml.messaging_response import MessagingResponse
 from src.apiTwilio import subscribe_sms_alert,call_user 
-from src.sql import *
+from sql import *
+import re
 
 @app.route('/')
 def home():
@@ -19,17 +21,32 @@ def notify_subscribers(channel_id, channel_name):
     db = SQL()
     numbers = db.getSubscribers(channel_id)
     db.close()
-    
+
     for number in numbers:
         subscribe_sms_alert(number,channel_id, channel_name)
+        
+
+@app.route('/api/unsubscribe_sms', methods=['POST','GET'])
+def unsubscribe_sms():
+    response = MessagingResponse()
+    print(response)
+    number = request.form['From']
+    body = request.form['Body']
+    body = str(body).lower()
+
+    reg = re.search("unsubscribe[' ']?[0-9]+[' ']?$", body)
+    if reg:
+        ID = re.search("[0-9]+", reg[0])
+        db = SQL()
+        db.removeSubscription(str(ID.group(0)), str(number))
+        db.close()
+    return str(response)
 
 @app.route('/api/voice', methods=['POST','GET'])
 def voice():
     response = VoiceResponse()
-    #subscribe_sms_alert('+61468615313', '1', 'English')
-
     gather = Gather(action='/api/speechText', finishOnKey="#" , method="GET", timeout="10")
-    gather.say("Hello Welcome to Sandbox, please wait for speech options or press a number followed by the hash key")
+    gather.say("Hello Welcome to Sandbox, please wait for speech options. For numpad options, press a following number then the hash key")
     gather.say("Press 1 to directly search a channel I D")
     gather.say("Press 2 to browse categories")
     gather.say("Press 3 to record to a channel")
@@ -93,34 +110,75 @@ def confirmChannel():
 @app.route('/api/selectChannel', methods=['POST','GET'])
 def selectChannel():
     
+    db = SQL()
+    response = VoiceResponse()
+    index = 0
     try:
         ID = request.args.get('ID')
-        option = requestion.args.get('Digits')
-        curr_lec_id = 0 #You gotta get this
+        index = request.args.get('Index')
     except:
         ID = request.args.get('Digits')
-        curr_lec_id = 0 #max number
+    
+    if ID == None:
+        ID = request.args.get('Digits')
+        index=0
 
+    print(ID)
+    check = db.channelExist(str(ID))
+    if check == 0:
+        response.say('Channel ID does not exist')
+        response.redirect('/api/speechText?Digits=1', method="GET")
+    else:
+        contentList = db.getContentIDTitleOnly(str(ID))
+
+        maxLen = len(contentList) 
+
+        currentTitle = contentList[int(index)][1]
+        currContentID = contentList[int(index)][0]
+
+        actionText = '/api/selectChannelOptions?ID=' + str(ID) + '&Index=' + str(index) + '&maxLen=' + str(maxLen) + '&currContentID='  + str(currContentID)
+
+        gather = Gather(action=actionText, finishOnKey="#" , method="GET", timeout="10")
+        gather.say('Current Content is ' + currentTitle)
+        gather.say('Press 1 to select it')
+        gather.say('Press 2 to go to a previous entry in time')
+        gather.say('Press 3 to go to the following entry in time')
+        response.append(gather)
+        
+        db.close()
+        return str(response)
+
+@app.route('/api/selectChannelOptions', methods=['POST','GET'])
+def selectChannelOptions():
     response = VoiceResponse()
-    response.say("hello you reached this point")
+    ID = request.args.get('ID')
+    index = request.args.get('Index')
+    option = request.args.get('Digits')
+    contentID = request.args.get('currContentID')
+    maxLen = request.args.get('maxLen')
 
     if str(option) == '1':
-        #Select the current one to listen to
-        pass
+        db = SQL()
+        tup = db.getContentText(str(ID), str(contentID))
+        db.close()
+        response.say(tup[0])
+        response.say("Thank you for listening")
     elif str(option) == '2':
-        #Go next
-        pass
-    elif str(option) == '3':
-        #Go back
-        pass
-    else:
-        pass
+        if int(index) + 1 <= int(maxLen):
+            index = int(index) + 1
 
-    #Search for if the channel exists 
-    #Channel 
-    #If it does, ask them which one of them they wanna play
-    #If it doesn't try again
-    return 'a'
+        redirect = '/api/selectChannel?ID=' + str(ID) + '&Index=' + str(index)
+        response.redirect(redirect, method="GET")  
+    elif str(option) == '3':
+        if int(index) - 1 > 0:
+            index = int(index) - 1
+        redirect = '/api/selectChannel?ID=' + str(ID) + '&Index=' + str(index)
+        response.redirect(redirect, method="GET")  
+    else:
+        redirect = '/api/selectChannel?ID=' + str(ID) + '&Index=' + str(index)
+        response.redirect(redirect, method="GET")
+
+    return str(response)
 
 
 
@@ -140,7 +198,7 @@ def speechOptions():
     print(data)
     if data >= 0.5:
 
-        gather = Gather(action='/api/speechSpeak', input='speech dtmf', method="GET")
+        gather = Gather(action='/api/speechOptionsConfirm', input='speech dtmf', method="GET")
         gather.say("Hello Welcome to Sandbox Speech Options, please say one of the following numbers followed by a hash")
         gather.say("Say 1 to directly search a channel I D")
         gather.say("Say 2 to browse categories")
@@ -156,19 +214,18 @@ def speechOptions():
 
     return str(response)
 
-@app.route('/api/speechSpeak', methods=['POST','GET'])
-def speechSpeak():
-
-    data = request.args.get('SpeechResult')
-    print(data)
-    said = "You said " + str(data)
-
+@app.route('/api/speechOptionsConfirm', methods=['POST','GET'])
+def speechOptionsConfirm():
     response = VoiceResponse()
-    response.say(said)
+
+    data = request.args.get('Digits')
+    print(data)
 
     if str(data) == '1':
-        pass
-       #ask for channel name
+        gather = Gather(action='/api/confirmChannelSpeech', input='speech dtmf' , method="GET", timeout="10")
+        gather.say("Please say a channel I D to begin listening")
+        response.append(gather)
+        response.redirect('/api/speechText?Digits=1', method="GET")
     elif str(data) == '2':
         pass
         #ask for category
@@ -178,13 +235,67 @@ def speechSpeak():
     elif str(data) == '4':
         response.redirect('/api/speechOptions', method="GET")
     else:
-        response.say("No response... or wrong I D")
+        response.say("No response... or wrong ID")
         response.redirect('/api/speechOptions', method="GET")
 
     return str(response)
 
+@app.route('/api/confirmChannelSpeech', methods=['POST','GET'])
+def confirmChannelSpeech():
 
+    response = VoiceResponse()
 
+    ID = request.args.get('Digits')
+    actionID = '/api/selectSpeechChannel?Digits=' + str(ID)
+
+    IDGiven = "You gave us ID " + str(ID) +  ". Please say anything to confirm, Say nothing to go back"
+    gather = Gather(action=actionID, input='speech dtmf' , method="GET", timeout="10")
+    gather.say(IDGiven)
+    response.append(gather)
+
+    response.redirect('/api/speechOptionsConfirm?Digits=1', method="GET")
+    return str(response)
+
+@app.route('/api/selectSpeechChannel', methods=['POST','GET'])
+def selectSpeechChannel():
+    
+    db = SQL()
+    response = VoiceResponse()
+    index = 0
+    try:
+        ID = request.args.get('ID')
+        index = request.args.get('Index')
+    except:
+        ID = request.args.get('Digits')
+    
+    if ID == None:
+        ID = request.args.get('Digits')
+        index=0
+
+    print(ID)
+    check = db.channelExist(str(ID))
+    if check == 0:
+        response.say('Channel ID does not exist')
+        response.redirect('/api/speechOptionsConfirm?Digits=1', method="GET")
+    else:
+        contentList = db.getContentIDTitleOnly(str(ID))
+
+        maxLen = len(contentList) 
+
+        currentTitle = contentList[int(index)][1]
+        currContentID = contentList[int(index)][0]
+
+        actionText = '/api/selectChannelOptions?ID=' + str(ID) + '&Index=' + str(index) + '&maxLen=' + str(maxLen) + '&currContentID='  + str(currContentID)
+
+        gather = Gather(action=actionText, input='speech dtmf' , method="GET", timeout="10")
+        gather.say('Current Content is ' + currentTitle)
+        gather.say('Say 1 to select it')
+        gather.say('Say 2 to go to a previous entry in time')
+        gather.say('Say 3 to go to the following entry in time')
+        response.append(gather)
+        
+        db.close()
+        return str(response)
 
 
 

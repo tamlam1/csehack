@@ -7,7 +7,7 @@ client = Client(account_sid, auth_token)
 
 # <Play>http://demo.twilio.com/docs/classic.mp3</Play>
 def subscribe_sms_alert(number, channel_no, channel_name):
-    text = "Sandbox: " + str(channel_name) + " has just been updated. Call us back on +61480093161 and let us know the channel ID: " + str(channel_no) + " to start listening!"
+    text = "Sandbox: " + str(channel_name) + " has just been updated. Call us back on +61480093161 and let us know the channel ID: " + str(channel_no) + " to start listening! Reply 'Unsubscribe [CONTENT ID]' to stop."
 
     message = client.messages \
                 .create(
