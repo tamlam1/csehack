@@ -1,7 +1,8 @@
 from flask import request, jsonify
 from app import app
 from twilio.twiml.voice_response import Gather, VoiceResponse, Say
-from src.twilio import subscribe_sms_alert
+from src.apiTwilio import subscribe_sms_alert,call_user 
+from src.sql import *
 
 @app.route('/')
 def home():
@@ -13,6 +14,14 @@ def get_data():
     data = request.get_json()
     print(data)
     return {'hi':'done'}
+
+def notify_subscribers(channel_id, channel_name):
+    db = SQL()
+    numbers = db.getSubscribers(channel_id)
+    db.close()
+    
+    for number in numbers:
+        subscribe_sms_alert(number,channel_id, channel_name)
 
 @app.route('/api/voice', methods=['POST','GET'])
 def voice():

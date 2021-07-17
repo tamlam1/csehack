@@ -9,7 +9,7 @@ class SQL():
 
 
     def initialiseDb(self):
-        self.curr.execute(''' CREATE TABLE content (CONTENTID INT PRIMARY KEY NOT NULL, CHANNELID INT NOT NULL, FILENAME TEXT NOT NULL, DATE TEXT NOT NULL)''')
+        self.curr.execute(''' CREATE TABLE content (CONTENTID INT NOT NULL, CHANNELID INT NOT NULL, TITLE TEXT NOT NULL, FILENAME TEXT NOT NULL, DATE TEXT NOT NULL, PRIMARY KEY(CONTENTID,CHANNELID))''')
         self.conn.commit()
 
         self.curr.execute(''' CREATE TABLE channels (CHANNELID INT PRIMARY KEY NOT NULL, CHANNELNAME TEXT NOT NULL, CATEGORY TEXT NOT NULL)''')
@@ -64,7 +64,7 @@ class SQL():
     }
     """
     #add the data to the appropriate database
-    def addContent(self, contentId, channelId, file, date):
+    def addContent(self, contentId, channelId, title, file, date):
 
         """
         # code for finding row number + 1
@@ -75,7 +75,7 @@ class SQL():
         #add the new filename in the database
         #if statements are needed to do the same thing because for some reason 
         #sqlite does not let you string format INSERT statements 
-        self.curr.execute("INSERT INTO content VALUES (?,?,?,?)", (contentId, channelId, file, date))
+        self.curr.execute("INSERT INTO content VALUES (?,?,?,?,?)", (contentId, channelId, title, file, date))
         self.conn.commit()
 
 
@@ -83,9 +83,33 @@ class SQL():
         self.curr.execute("INSERT INTO subscriptions VALUES (?,?)", (channelId, phoneNumber))
         self.conn.commit()
 
-    def addChannel(self, channelId, channelname, category):
-        self.curr.execute("INSERT INTO channels VALUES (?,?)", (channelId, channelname, category))
+    def removeSubscription(self, channelId, phoneNumber):
+        self.curr.execute("DELETE FROM subscriptions where channelId=? and phoneNumber=?", (channelId, phoneNumber))
         self.conn.commit()
+
+    def addChannel(self, channelId, channelname, category):
+        self.curr.execute("INSERT INTO channels VALUES (?,?,?)", (channelId, channelname, category))
+        self.conn.commit()
+
+    def deleteChannel(self, channelId):
+        self.curr.execute("DELETE FROM channels where channelid = "+ str(channelId))
+        self.conn.commit()
+
+    def deleteContent(self, CONTENTID, CHANNELID):
+        self.curr.execute("DELETE FROM content where CHANNELID = "+ str(CHANNELID) + " and " + "CONTENTID = " + str(CONTENTID))
+        self.conn.commit()
+
+    def getContent(self, CHANNELID):
+        cursor = self.curr.execute("SELECT * FROM content where CHANNELID = "+ str(CHANNELID))
+        return cursor
+
+    def getSubscribers(self, CHANNELID):
+        cursor = self.curr.execute("SELECT * FROM subscriptions where CHANNELID = "+ str(CHANNELID))
+        return cursor
+
+    def getChannels(self):
+        cursor = self.curr.execute("SELECT * FROM channels")
+        return cursor
 
     def close(self):
         self.conn.close()
