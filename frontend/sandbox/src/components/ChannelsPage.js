@@ -39,6 +39,17 @@ import {
 } from "@material-ui/core/styles";
 import { useHistory, useParams } from 'react-router-dom';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
+
 const useStyles1 = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
@@ -82,58 +93,15 @@ const theme = createTheme({
 const data = [
   {
     "id": '1',
-    "lecture_name": "lecture 1",
-    "time_uploaded": "17/07/21",
+    "channel_name": "channel 1",
   },
   {
     "id": '2',
-    "lecture_name": "lecture 2",
-    "time_uploaded": "18/07/21",
+    "channel_name": "channel 2",
   },
   {
     "id": '3',
-    "lecture_name": "lecture 3",
-    "time_uploaded": "19/07/21",
-  },
-  {
-    "id": '4',
-    "lecture_name": "lecture 1",
-    "time_uploaded": "17/07/21",
-  },
-  {
-    "id": '5',
-    "lecture_name": "lecture 2",
-    "time_uploaded": "18/07/21",
-  },
-  {
-    "id": '6',
-    "lecture_name": "lecture 3",
-    "time_uploaded": "19/07/21",
-  },
-  {
-    "id": '7',
-    "lecture_name": "lecture 1",
-    "time_uploaded": "17/07/21",
-  },
-  {
-    "id": '8',
-    "lecture_name": "lecture 2",
-    "time_uploaded": "18/07/21",
-  },
-  {
-    "id": '9',
-    "lecture_name": "lecture 3",
-    "time_uploaded": "19/07/21",
-  },
-  {
-    "id": '10',
-    "lecture_name": "lecture 1",
-    "time_uploaded": "17/07/21",
-  },
-  {
-    "id": '11',
-    "lecture_name": "lecture 2",
-    "time_uploaded": "18/07/21",
+    "channel_name": "channel 3",
   },
   
 ]
@@ -230,19 +198,85 @@ function ChannelsPage() {
   };
 
 
+  // functions for dialog box =================================
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+
+  const [openRemove, setOpenRemove] = React.useState(false);
+
+  const handleClickOpenRemove = () => {
+    setOpenRemove(true);
+  };
+
+  const handleCloseRemove = () => {
+    setOpenRemove(false);
+  };
+
+
+
+  const [phoneNumber, setPhoneNumber] = React.useState();
+  const [currChannel, setCurrChannel] = React.useState('');
+  // =========================================================
+
+  const submitPhoneNumber = () => {
+    fetch('/api/subscribe_user', {
+      method: 'POST',
+      headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "phone_number" : '+' + [phoneNumber],
+        "channel_id": [currChannel],
+      }),
+    }).then(r => r.json()).then((data) => {
+      console.log(data.hi);
+    })
+    // console.log(phoneNumber);
+  };
+
+  const submitPhoneNumberRemove = () => {
+    fetch('/api/unsubscribe_user', {
+      method: 'POST',
+      headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "phone_number" : '+' + [phoneNumber],
+        "channel_id": [currChannel],
+      }),
+    }).then(r => r.json()).then((data) => {
+      console.log(data.hi);
+    })
+    // console.log(phoneNumber);
+  };
 
   return (
     <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">
       <MuiThemeProvider theme={theme}>
       This is the channels page.
+      
       <TableContainer component={Paper} className={classes.card}>
         <Table className={classes.table} aria-label="custom pagination table">
           <TableHead>
             <TableRow>
-              <TableCell width="5%" align="center">
+              <TableCell width="3%" align="center">
                 
               </TableCell>
-              <TableCell width="95%">
+              <TableCell width="3%" align="center">
+                
+              </TableCell>
+              <TableCell width="94%">
                 Topic
               </TableCell>
               
@@ -252,17 +286,83 @@ function ChannelsPage() {
             {(rowsPerPage > 0
               ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : data
-            ).map((lecture) => (
-              <TableRow key={lecture.id}>
-                <TableCell width="5%" align="center">
-                  <Button>
-                    <Tooltip title="Subscribe to channel"><AddCircleOutlineIcon /></Tooltip>
+            ).map((channel) => (
+              <TableRow key={channel.id}>
+                <TableCell width="3%" align="right">
+                  <Button
+                    onClick={() => {
+                      handleClickOpen();
+                      setCurrChannel(channel.id);
+                    }}
+                  >
+                    <Tooltip title={'Subscribe to channel ' + channel.channel_name}><AddCircleOutlineIcon /></Tooltip>
                     
                   </Button>
+                  <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Please enter you phone number to subscribe to the channel.
+                      </DialogContentText>
+                      <PhoneInput
+                        country={'au'}
+                        value={phoneNumber}
+                        onChange={setPhoneNumber}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleClose} color="primary">
+                        Cancel
+                      </Button>
+                      <Button onClick={() => {
+                        handleClose();
+                        submitPhoneNumber();
+                        }}
+                        color="primary">
+                        Subscribe
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                 </TableCell>
-                <TableCell width="95%">
-                  <Link to={/lectures/ + lecture.lecture_name} style={{textDecoration:"none", color:"#1165ed"}}>
-                    {lecture.lecture_name}
+                <TableCell width="3%" align="left">
+                  <Button
+                    onClick={() => {
+                      handleClickOpenRemove();
+                      setCurrChannel(channel.id);
+                    }}
+                  >
+                    <Tooltip title={'Unsubscribe to channel ' + channel.channel_name}><RemoveCircleOutlineIcon /></Tooltip>
+                    
+                  </Button>
+                  <Dialog open={openRemove} onClose={handleCloseRemove} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Unsubscribe</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Please enter you phone number to unsubscribe to the channel.
+                      </DialogContentText>
+                      <PhoneInput
+                        country={'au'}
+                        value={phoneNumber}
+                        onChange={setPhoneNumber}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseRemove} color="primary">
+                        Cancel
+                      </Button>
+                      <Button onClick={() => {
+                        handleCloseRemove();
+                        submitPhoneNumberRemove();
+                        }}
+                        color="primary">
+                        Unsubscribe
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </TableCell>
+                <TableCell width="94%">
+                  <Link to={/lectures/ + channel.id} style={{textDecoration:"none", color:"#1165ed"}}>
+                    {channel.channel_name}
                   </Link>
                 </TableCell>
                 

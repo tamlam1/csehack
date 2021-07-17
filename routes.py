@@ -14,6 +14,27 @@ def get_data():
     print(data)
     return {'hi':'done'}
 
+@app.route('/api/subscribe_user', methods=['POST'])
+def subscribe_user():
+
+    data = request.get_json()
+    print(data)
+    return {'hi':'done'}
+
+@app.route('/api/unsubscribe_user', methods=['POST'])
+def unsubscribe_user():
+
+    data = request.get_json()
+    print(data)
+    return {'hi':'done'}
+
+@app.route('/api/play_lecture', methods=['POST'])
+def play_lecture():
+
+    data = request.get_json()
+    print(data)
+    return {'hi':'done'}
+
 @app.route('/api/voice', methods=['POST','GET'])
 def voice():
     response = VoiceResponse()
