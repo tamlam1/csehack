@@ -1,5 +1,10 @@
 import { Button, TextField, Box } from '@material-ui/core';
 import React, { useEffect } from 'react';
+
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -11,9 +16,14 @@ function HomePage({PageContents}) {
 
 
   return (
-    <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">
-      This is the homepage.
-    <Link to="/upload">
+    <Box>
+    <AppBar position="relative">
+        <Toolbar>
+          {/*Probs logo here idk*/}
+          <Typography variant="h6" color="inherit" noWrap>
+            SAND BOX
+          </Typography>
+          <Link to="/upload">
       <Button 
         variant="contained"
         color="primary"
@@ -40,6 +50,10 @@ function HomePage({PageContents}) {
         Channels
       </Button>
     </Link>
+        </Toolbar>
+      </AppBar>
+      
+ 
     {PageContents}
     </Box>
   );
