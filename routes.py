@@ -25,6 +25,7 @@ def get_data():
     return {'hi':'done'}
 
 def notify_subscribers(channel_id, channel_name):
+    #when new content is added, notify all subscribers using text
     db = SQL()
     numbers = db.getSubscribers(channel_id)
     db.close()
