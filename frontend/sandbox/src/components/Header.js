@@ -4,6 +4,9 @@ import React, { useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
+import { useHistory } from 'react-router-dom';
 
 import {
   BrowserRouter as Router,
@@ -12,15 +15,31 @@ import {
   Link
 } from "react-router-dom";
 
+const data = [
+  {
+    "id": '1',
+    "channel_name": "channel 1",
+  },
+  {
+    "id": '2',
+    "channel_name": "channel 2",
+  },
+  {
+    "id": '3',
+    "channel_name": "channel 3",
+  },
+  
+]
+
 function HomePage({PageContents}) {
 
-
+  let history = useHistory();
   return (
     <Box>
     <AppBar position="relative">
         <Toolbar>
           {/*Probs logo here idk*/}
-          <Typography variant="h6" color="inherit" noWrap>
+          <Typography variant="h6" color="inherit" noWrap style={{margin:"5px"}}>
             SAND BOX
           </Typography>
           <Link to="/upload">
@@ -50,7 +69,22 @@ function HomePage({PageContents}) {
         Channels
       </Button>
     </Link>
+        <Autocomplete
+          id="combo-box"
+          options={data}
+          getOptionLabel={(option) => option.channel_name}
+          style={{ width: 300, background:"white", margin:"10px"}}
+          renderInput={(params) => <TextField {...params} label="Channel Search" variant="outlined" />}
+          onChange={(e, channelOption) => {
+            
+            // console.log(channelOption.id);
+            if (channelOption) {
+              history.push("/lectures/" + channelOption.id)
+            }
+          }}
+        />
         </Toolbar>
+        
       </AppBar>
       
  

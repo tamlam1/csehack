@@ -38,6 +38,15 @@ import PhoneCallbackIcon from '@material-ui/icons/PhoneCallback';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+
 const defaultTheme = createTheme();
 const theme = createTheme({
   overrides: {
@@ -227,6 +236,37 @@ function LecturePage() {
   };
 
 
+  // functions for dialog box =================================
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [currLecture, setCurrLecture] = React.useState('');
+  // =========================================================
+
+  const submitPhoneNumber = () => {
+    fetch('/api/play_lecture', {
+      method: 'POST',
+      headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "phone_number" : '+' + [phoneNumber],
+        "lecture_id": [currLecture],
+      }),
+    }).then(r => r.json()).then((data) => {
+      console.log(data.hi);
+    })
+    // console.log(phoneNumber);
+  };
 
   return (
     <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">
@@ -260,9 +300,43 @@ function LecturePage() {
                   {lecture.time_uploaded}
                 </TableCell>
                 <TableCell width="10%" align="center">
-                  <Button>
+                  <Button 
+                    onClick={() => {
+                      handleClickOpen();
+                      setCurrLecture(lecture.id);
+                    }}
+                  >
                   <Tooltip title="Play via phone call"><PhoneCallbackIcon /></Tooltip>
                   </Button>
+
+
+                  <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Play on phone</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Please enter you phone number to play the lecture.
+                      </DialogContentText>
+                      <PhoneInput
+                        country={'au'}
+                        value={phoneNumber}
+                        onChange={setPhoneNumber}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleClose} color="primary">
+                        Cancel
+                      </Button>
+                      <Button onClick={() => {
+                        handleClose();
+                        submitPhoneNumber();
+                        }}
+                        color="primary">
+                        Play
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+
+
                 </TableCell>
               </TableRow>
             ))}

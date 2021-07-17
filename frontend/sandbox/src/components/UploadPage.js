@@ -6,11 +6,10 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import {useForm} from 'react-hook-form'
 
 function UploadPage() {
   const [transcript, setTranscript] = React.useState(''); 
-  const {register, handleSubmit} = useForm();
+
 
   React.useEffect(() => {
     fetch('/api/home').then(r => r.json()).then((data) => {
