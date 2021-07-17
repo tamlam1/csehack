@@ -26,6 +26,13 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import AddIcon from '@material-ui/icons/Add';
+
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import PhonelinkRingIcon from '@material-ui/icons/PhonelinkRing';
@@ -229,12 +236,77 @@ function ChannelsPage() {
     setPage(0);
   };
 
+  const [newChannel, setNewChannel] = React.useState('');
+  const [newChannelPop, setNewChannelPop] = React.useState(false);
+
+  const submitCreateChannel = () => {
+    fetch('/api/create_channel', {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: escape(JSON.stringify({newChannel})),
+    }).then(res => res.json()).then((data) => {
+        console.log("hi");
+    }).catch(error => console.log(error));
+  } 
+
+  const cancelCreateChannel = () => {
+    setNewChannelPop(false);
+  }
+
+  const openCreateChannel = () => {
+    setNewChannelPop(true)
+  }
+
 
 
   return (
     <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">
       <MuiThemeProvider theme={theme}>
       This is the channels page.
+
+      <Dialog
+        open={newChannelPop}
+        onClose={openCreateChannel}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">New Channel</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please enter the name of your new channel. Remember your channel will be public and everyone will see it!
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="newChannel"
+            label="Channel Name"
+            type="text"
+            fullWidth
+            onChange={(e) => setNewChannel(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelCreateChannel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={submitCreateChannel} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Button
+        variant="contained"
+        color="primary"
+        disableElevation
+        onClick={openCreateChannel}
+        startIcon={<AddIcon />}
+      >
+        Create Channel
+      </Button>
+
       <TableContainer component={Paper} className={classes.card}>
         <Table className={classes.table} aria-label="custom pagination table">
           <TableHead>
