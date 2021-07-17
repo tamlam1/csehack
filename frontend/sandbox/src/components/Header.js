@@ -12,7 +12,6 @@ function HomePage({PageContents}) {
 
   return (
     <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">
-      This is the homepage.
     <Link to="/upload">
       <Button 
         variant="contained"
