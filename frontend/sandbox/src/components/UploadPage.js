@@ -10,12 +10,9 @@ import {
 function UploadPage() {
   const [transcript, setTranscript] = React.useState(''); 
   const [category, setCategory] = React.useState('Chemistry'); 
+  const [channelAdd, setChannelAdd] = React.useState(''); 
 
-  React.useEffect(() => {
-    fetch('/api/home').then(r => r.json()).then((data) => {
-      console.log(data.hi);
-    })
-  }, []);
+
 
   const sendData = () => {
     fetch('/api/get_data', {
@@ -25,7 +22,9 @@ function UploadPage() {
           'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        "text" : "this is some text"
+        "category" : [category],
+        "text" : [transcript],
+        "channel": [channelAdd],
       }),
     }).then(r => r.json()).then((data) => {
       console.log(data.hi);
@@ -52,14 +51,7 @@ function UploadPage() {
           // className={classes.textarea}
           value={transcript}
         />
-        <Button 
-          variant="contained"
-          color="primary"
-          style={{margin:"5px"}}
-          onClick={() => console.log(transcript)}
-        >
-          Print input
-        </Button>
+
         <Button 
           variant="contained"
           color="primary"
@@ -82,6 +74,22 @@ function UploadPage() {
         <option value="Modern History">Modern History</option>
         <option value="English">English</option>
       </select>
+      <TextField
+          name="transcript"
+          placeholder="Channel number"
+          variant="outlined"
+          multiline
+          rows={10}
+          rowsMax={10}
+          style={{margin:"5px", width:"100px", height:"10px"}}
+          onChange={(e) => {
+            setChannelAdd(e.target.value);
+           
+          
+          }}
+          // className={classes.textarea}
+          value={channelAdd}
+        />
     </Box>
   );
 }

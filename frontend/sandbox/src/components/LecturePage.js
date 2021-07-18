@@ -220,6 +220,7 @@ const useStyles2 = makeStyles({
 
 function LecturePage() {
   let {channelId} = useParams();
+  console.log("channel id is : " + channelId);
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
