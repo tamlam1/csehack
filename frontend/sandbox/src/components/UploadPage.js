@@ -11,6 +11,7 @@ function UploadPage() {
   const [transcript, setTranscript] = React.useState(''); 
   const [category, setCategory] = React.useState('Chemistry'); 
   const [channelAdd, setChannelAdd] = React.useState(''); 
+  const [title, setTitle] = React.useState(''); 
 
 
 
@@ -25,6 +26,7 @@ function UploadPage() {
         "category" : [category],
         "text" : [transcript],
         "channel": [channelAdd],
+        "title":[title],
       }),
     }).then(r => r.json()).then((data) => {
       console.log(data.hi);
@@ -74,22 +76,40 @@ function UploadPage() {
         <option value="Modern History">Modern History</option>
         <option value="English">English</option>
       </select>
-      <TextField
-          name="transcript"
-          placeholder="Channel number"
-          variant="outlined"
-          multiline
-          rows={10}
-          rowsMax={10}
-          style={{margin:"5px", width:"100px", height:"10px"}}
-          onChange={(e) => {
-            setChannelAdd(e.target.value);
-           
-          
-          }}
-          // className={classes.textarea}
-          value={channelAdd}
-        />
+      <Box>
+        <TextField
+            name="transcript"
+            placeholder="Channel number"
+            variant="outlined"
+            multiline
+            rows={10}
+            rowsMax={10}
+            style={{margin:"5px", width:"100px", height:"10px"}}
+            onChange={(e) => {
+              setChannelAdd(e.target.value);
+             
+            
+            }}
+            // className={classes.textarea}
+            value={channelAdd}
+          />
+          <TextField
+            name="transcript"
+            placeholder="Lecture Title"
+            variant="outlined"
+            multiline
+            rows={10}
+            rowsMax={10}
+            style={{margin:"5px", width:"100px", height:"10px"}}
+            onChange={(e) => {
+              setTitle(e.target.value);
+             
+            
+            }}
+            // className={classes.textarea}
+            value={title}
+          />
+      </Box>
     </Box>
   );
 }

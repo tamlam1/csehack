@@ -31,9 +31,23 @@ const data = [
   
 ]
 
-function HomePage({PageContents}) {
 
+
+function HomePage({PageContents}) {
+  const [data, setData] = React.useState([{}])
   let history = useHistory();
+
+  React.useEffect(() => {
+    fetch('/api/get_channels', {
+       method: 'GET',
+       headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+       },
+    }).then(res => res.json()).then((data) => {
+        setData(data.data);
+    }).catch(error => console.log(error));
+  }, []);
   return (
     <Box>
     <AppBar position="relative">

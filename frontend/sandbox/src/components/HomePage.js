@@ -13,6 +13,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useHistory } from 'react-router-dom';
 
 
 import {
@@ -104,7 +105,7 @@ const categories =
   }]
 
 function HomePage() {
-
+  let history = useHistory();
   const classes = useStyles();
 
   return (
@@ -156,7 +157,7 @@ function HomePage() {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small" color="primary">
+                    <Button size="small" color="primary" onClick={() => history.push("/channels/"+{cat})}>
                       View Channels
                     </Button>
                   </CardActions>
