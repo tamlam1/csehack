@@ -2,7 +2,7 @@ from twilio.rest import Client
 from twilio.twiml.voice_response import Gather, VoiceResponse, Say
 
 account_sid = 'AC4ac9e7a735105238e024d5d53a1a7d44'
-auth_token = ''
+auth_token = '2e8c96de930b93ca82d19168798a7b79'
 client = Client(account_sid, auth_token)
 
 def subscribe_sms_alert(number, channel_no, channel_name):

@@ -79,6 +79,7 @@ def unsubscribe_sms():
     number = request.form['From']
     body = request.form['Body']
     body = str(body).lower()
+    print(body)
 
     reg = re.search("unsubscribe[' ']?[0-9]+[' ']?$", body)
     if reg:
