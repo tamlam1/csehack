@@ -223,8 +223,9 @@ function LecturePage() {
   console.log("channel id is : " + channelId);
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [data, setData] = React.useState([{}]);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
@@ -249,10 +250,6 @@ function LecturePage() {
     setOpen(false);
   };
 
-  const [phoneNumber, setPhoneNumber] = React.useState('');
-  const [currLecture, setCurrLecture] = React.useState('');
-  // =========================================================
-  
   React.useEffect(() => {
     fetch('/api/get_content', {
        method: 'POST',
@@ -268,6 +265,10 @@ function LecturePage() {
         console.log(data);
     }).catch(error => console.log(error));
   }, []);
+
+  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [currLecture, setCurrLecture] = React.useState('');
+  // =========================================================
 
   const submitPhoneNumber = () => {
     fetch('/api/play_lecture', {
