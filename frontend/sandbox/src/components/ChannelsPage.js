@@ -139,6 +139,7 @@ function TablePaginationActions(props) {
     onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
+  
   return (
     <div className={classes.root}>
       <IconButton
@@ -197,7 +198,7 @@ function ChannelsPage() {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const [channel, setData] = React.useState({})
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
@@ -272,6 +273,18 @@ function ChannelsPage() {
     })
     // console.log(phoneNumber);
   };
+
+  React.useEffect(() => {
+    fetch('/api/get_channels', {
+       method: 'GET',
+       headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+       },
+    }).then(res => res.json()).then((data) => {
+        setData(data.data);
+    }).catch(error => console.log(error));
+  }, []);
 
   return (
     <Box display="flex" flexDirection="column" className="App" alignItems="center" justifyContent="center">

@@ -124,6 +124,32 @@ class SQL():
         cursor = self.curr.execute("SELECT * FROM channels")
         return cursor
 
+    def convertChannelToJson(self, cursor):
+        temp = {}
+        for i in cursor:
+            tempCon = {}
+            num = i[0]
+
+            tempCon['id'] = i[0] 
+            tempCon['channel_name'] = i[1] 
+
+            temp[num] = tempCon
+
+        return temp
+
+    def convertContentToJson(self, cursor):
+        temp = {}
+        for i in cursor:
+            tempCon = {}
+            num = i[0]
+
+            tempCon['id'] = i[0] 
+            tempCon['content_name'] = i[1] 
+
+            temp[num] = tempCon
+
+        return temp 
+
     def getChannelName(self, CHANNELID):
         cursor = self.curr.execute("SELECT channelname FROM channels where channelid=" + str(CHANNELID))
         for i in cursor:   

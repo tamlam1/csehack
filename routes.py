@@ -10,12 +10,17 @@ import re
 def home():
     return {'hi':'hello'}
 
+@app.route('/api/get_channels', methods=['POST','GET'])
+def get_channels():
 
-@app.route('/api/call_user', methods=['POST','GET'])
-def call_user():
-    #Get user info from front_end
-    #call_user()
-    pass
+    db = SQL()
+    
+    a = db.getChannels()
+    temp = db.convertChannelToJson(a)
+
+    print(temp)
+    db.close()
+    return {'data': temp}
 
 @app.route('/api/get_data', methods=['POST'])
 def get_data():
