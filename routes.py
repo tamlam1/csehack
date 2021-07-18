@@ -127,7 +127,7 @@ def play_lecture():
     data = request.get_json()
     number = str(data['phone_number'])
     number = number[:3] + number[4:]
-    channelID = str(data['channel_id'][0])
+    channelID = str(data['content_id'][0])
     contentID = str(data['lecture_id'][0])
     
     tup = db.getContentText(channelID,contentID)
