@@ -26,6 +26,9 @@ function App() {
           <Route path="/lectures/:channelId">
             <Header PageContents={<LecturePage />} />
           </Route>
+          <Route path="/channels">
+            <Header PageContents={<ChannelsPage />} />
+          </Route>
           <Route path="/channels/:category">
             <Header PageContents={<ChannelsPage />} />
           </Route>

@@ -261,7 +261,7 @@ function LecturePage() {
         "id" : channelId
       }),
     }).then(res => res.json()).then((data) => {
-        setData(data);
+        setData(data.data);
         console.log(data);
     }).catch(error => console.log(error));
   }, []);
