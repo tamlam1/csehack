@@ -128,8 +128,6 @@ class SQL():
         temp = []
         for i in cursor:
             tempCon = {}
-            num = i[0]
-
             tempCon['id'] = i[0] 
             tempCon['channel_name'] = i[1] 
 
@@ -138,17 +136,19 @@ class SQL():
         return temp
 
     def convertContentToJson(self, cursor):
-        temp = {}
+        temp = []
         for i in cursor:
             tempCon = {}
-            num = i[0]
 
             tempCon['id'] = i[0] 
-            tempCon['content_name'] = i[1] 
-
-            temp[num] = tempCon
-
-        return temp 
+            tempCon['channel_id'] = i[1] 
+            tempCon['lecture_name'] = i[2] 
+            tempCon['content'] = i[3]
+            tempCon['time_uploaded'] = i[4] 
+             
+            temp.append(tempCon)
+        print(temp)
+        return temp
 
     def getChannelName(self, CHANNELID):
         cursor = self.curr.execute("SELECT channelname FROM channels where channelid=" + str(CHANNELID))

@@ -22,6 +22,22 @@ def get_channels():
     db.close()
     return {'data': temp}
 
+@app.route('/api/get_content', methods=['POST','GET'])
+def get_content():
+
+    data = request.get_json()
+
+    id = data['id']
+
+    db = SQL()
+    
+    a = db.getContent(str(id))
+    temp = db.convertContentToJson(a)
+
+    print(temp)
+    db.close()
+    return {'data': temp}
+
 @app.route('/api/get_data', methods=['POST'])
 def get_data():
 
