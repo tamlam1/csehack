@@ -25,10 +25,10 @@ def new_subscribe_sms_alert(number, channel_no, channel_name):
                     to=number
                  )
 
-def call_user(number, content, channel_name, channel_ID):
+def call_user(number, content, channel_ID):
     
     response = VoiceResponse()
-    response.say("Listening to..channel I D " + str(channel_ID) + " : " + str(channel_name))
+    response.say("Listening to..channel I D " + str(channel_ID))
     response.say(content)
     print(response)
 

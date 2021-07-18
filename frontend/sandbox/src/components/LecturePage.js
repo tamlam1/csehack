@@ -255,7 +255,7 @@ function LecturePage() {
   
   React.useEffect(() => {
     fetch('/api/get_content', {
-       method: 'GET',
+       method: 'POST',
        headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
@@ -265,7 +265,7 @@ function LecturePage() {
       }),
     }).then(res => res.json()).then((data) => {
         setData(data);
-        console.log(data)
+        console.log(data);
     }).catch(error => console.log(error));
   }, []);
 
@@ -279,6 +279,7 @@ function LecturePage() {
       body: JSON.stringify({
         "phone_number" : '+' + [phoneNumber],
         "lecture_id": [currLecture],
+        "content_id": channelId,
       }),
     }).then(r => r.json()).then((data) => {
       console.log(data.hi);

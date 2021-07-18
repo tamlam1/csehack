@@ -5,6 +5,7 @@ from twilio.twiml.messaging_response import MessagingResponse
 from src.apiTwilio import subscribe_sms_alert,call_user, new_subscribe_sms_alert 
 from sql import *
 import re
+from datetime import datetime
 
 @app.route('/')
 def home():
@@ -40,9 +41,14 @@ def get_content():
 
 @app.route('/api/get_data', methods=['POST'])
 def get_data():
+    # db = SQL()
 
-    data = request.get_json()
-    print(data)
+    # data = request.get_json()
+    # print(data)
+    # date = str(datetime.now())
+
+    # db.addContent(contentId, channelId, title, file, date)
+    # db.close()
     return {'hi':'done'}
 
 def notify_subscribers(channel_id, channel_name):
@@ -111,13 +117,17 @@ def unsubscribe_user():
 @app.route('/api/play_lecture', methods=['POST'])
 def play_lecture():
     
-    data = request.get_json()
-    # number = str(data['phone_number'])
-    # number = number[:3] + number[4:]
-    # ID = str(data['channel_id'][0])
+    db = SQL()
 
-    # call_user(number, content, channel_name, channel_ID)
+    data = request.get_json()
+    number = str(data['phone_number'])
+    number = number[:3] + number[4:]
+    channelID = str(data['channel_id'][0])
+    contentID = str(data['lecture_id'][0])
     
+    tup = db.getContentText(channelID,contentID)
+    call_user(number, tup[0], channelID)
+
     print(data)
     return {'hi':'done'}
 
