@@ -9,7 +9,7 @@ import {
 
 function UploadPage() {
   const [transcript, setTranscript] = React.useState(''); 
-
+  const [category, setCategory] = React.useState('Chemistry'); 
 
   React.useEffect(() => {
     fetch('/api/home').then(r => r.json()).then((data) => {
@@ -69,6 +69,19 @@ function UploadPage() {
           Upload
         </Button>
       </Box>
+      <select name="cars" onChange={(e) => {
+            setCategory(e.target.value);
+      }}>
+        <option value="Chemistry">Chemistry</option>
+        <option value="Physics">Physics</option>
+        <option value="Biology">Biology</option>
+        <option value="Maths">Maths</option>
+        <option value="PDHPE">PDHPE</option>
+        <option value="Geography">Geography</option>
+        <option value="Ancient History">Ancient History</option>
+        <option value="Modern History">Modern History</option>
+        <option value="English">English</option>
+      </select>
     </Box>
   );
 }
