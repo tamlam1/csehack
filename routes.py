@@ -41,30 +41,36 @@ def get_content():
 
 @app.route('/api/get_data', methods=['POST'])
 def get_data():
-    # db = SQL()
+    db = SQL()
 
-    # data = request.get_json()
-    # category = data['category']
-    # text = data['text']
-    # channel_id = data['channel']
-    # title = data['title']
+    data = request.get_json()
+    category = data['category'][0]
+    text = data['text'][0]
+    channel_id = data['channel'][0]
+    title = data['title'][0]
     
-    # date = str(datetime.now())
-    # getLatestContentID(CHANNELID):
-
-    # db.addContent(contentId, channelId, title, file, date)
-    # db.close()
+    now = datetime.now()
+    date = now.strftime("%m/%d/%Y, %H:%M:%S")
+    print(date)
+    
+    print(db.getLatestContentID(channel_id))
+    new_content_id = int(db.getLatestContentID(channel_id)) + 1
+    
+    db.addContent(new_content_id, channel_id, title, text, date)
+    notify_subscribers(channel_id)
+    db.close()
     return {'hi':'done'}
 
-def notify_subscribers(channel_id, channel_name):
+def notify_subscribers(channel_id):
     #when new content is added, notify all subscribers using text
     db = SQL()
     numbers = db.getSubscribers(channel_id)
-    db.close()
-
+    channel_name = db.getChannelName(channel_id)
+    
     for number in numbers:
-        subscribe_sms_alert(number,channel_id, channel_name)
-        
+        subscribe_sms_alert(number[1],channel_id, channel_name)
+    
+    db.close()
 
 @app.route('/api/unsubscribe_sms', methods=['POST','GET'])
 def unsubscribe_sms():
