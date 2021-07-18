@@ -125,7 +125,7 @@ class SQL():
         return cursor
 
     def convertChannelToJson(self, cursor):
-        temp = {}
+        temp = []
         for i in cursor:
             tempCon = {}
             num = i[0]
@@ -133,7 +133,7 @@ class SQL():
             tempCon['id'] = i[0] 
             tempCon['channel_name'] = i[1] 
 
-            temp[num] = tempCon
+            temp.append(tempCon)
 
         return temp
 
