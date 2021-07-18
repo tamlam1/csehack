@@ -44,8 +44,13 @@ def get_data():
     # db = SQL()
 
     # data = request.get_json()
-    # print(data)
+    # category = data['category']
+    # text = data['text']
+    # channel_id = data['channel']
+    # title = data['title']
+    
     # date = str(datetime.now())
+    # getLatestContentID(CHANNELID):
 
     # db.addContent(contentId, channelId, title, file, date)
     # db.close()

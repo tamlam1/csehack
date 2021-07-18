@@ -5,6 +5,9 @@ import sys
 # add dummy data here
 def main():
     db = SQL()
+    
+
+    print(db.getLatestContentID(1))
     # call_user('+610468615313', "DEEZ NUTS DEEZ NUTS DEEZ NUTS", "funny meme", "100")
     # Only need to do this once
     #db.initialiseDb()

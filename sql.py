@@ -116,6 +116,13 @@ class SQL():
             temp.append(i)
         return temp
 
+    def getLatestContentID(self,CHANNELID):
+        cursor = self.curr.execute("SELECT max(contentid) FROM content where CHANNELID = "+ str(CHANNELID))
+        max = 0
+        for i in cursor:
+            max = i[0]
+        return max
+
     def getSubscribers(self, CHANNELID):
         cursor = self.curr.execute("SELECT * FROM subscriptions where CHANNELID = "+ str(CHANNELID))
         return cursor
